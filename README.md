@@ -1,6 +1,9 @@
-**Voir le site**: https://neutron-pro.github.io/minesweeper-greensock/
+**Voir le site** : https://neutron-pro.github.io/minesweeper-greensock/
 
-#Controls
+Controls
+---
 
-Left Click: Open Case
-Right Click: Place Flag
+```yaml
+Left-Click: Open Case
+Right-Click: Place Flag
+```
