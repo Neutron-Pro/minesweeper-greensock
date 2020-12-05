@@ -96,6 +96,7 @@ class Board extends React.Component{
     }
 
     reset(){
+        document.documentElement.style.setProperty('--count-case-width', this.props.options.x);
         const rand = new Rand(this.props.options.seed)
         const bombs = Math.round((this.props.options.x * this.props.options.y) * (this.props.options.bomb / 100));
         this.setState({

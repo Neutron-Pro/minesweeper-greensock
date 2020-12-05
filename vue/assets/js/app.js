@@ -92,6 +92,7 @@ const vue = new Vue({
             this.cells = this.generateCell();
             this.win = false;
             this.rand = new Rand(this.options.seed);
+            document.documentElement.style.setProperty('--count-case-width', this.options.x);
 
             if(animation){
                 gsap.from('.cell', {opacity: 0, duration: .5, stagger: 0.01, ease: 'elastic'});
