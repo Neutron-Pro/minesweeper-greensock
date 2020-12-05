@@ -209,9 +209,7 @@ class Cell{
             gsap.to(this.element.getElementsByTagName('p'), {duration: .5, opacity: 0, ease: "power2.out", onComplete: ()=>{
                 this.element.innerText = '';
             }});
-        }
-
-        if(this.flag){
+        }else{
             this.element.innerHTML = '<p class="content"><i class="fas fa-flag"></i></p>';
             gsap.from(this.element.getElementsByTagName('p'), {duration: .5, opacity: 0, ease: "power2.in"})
         }
