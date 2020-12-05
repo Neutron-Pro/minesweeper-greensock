@@ -2,6 +2,8 @@
 
 **Voir le site avec React** : https://neutron-pro.github.io/minesweeper-greensock/react/
 
+**Voir le site avec Vue** : https://neutron-pro.github.io/minesweeper-greensock/vue/
+
 Controls
 ---
 
