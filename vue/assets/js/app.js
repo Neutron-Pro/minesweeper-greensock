@@ -30,6 +30,7 @@ Vue.component('screen', {
            this.$parent.reset(true);
            gsap.to(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 1, ease: 'power2.out', onComplete: () => {
                this.$parent.screen = false;
+               this.$parent.winner = false;
            }});
        }, 3_000);
    }
@@ -57,6 +58,7 @@ const vue = new Vue({
         bombs: 0,
         frees: 0,
         win: false,
+        winner: false,
         screen: false,
         rand: new Rand(options.seed),
         animations: []
@@ -87,6 +89,7 @@ const vue = new Vue({
         },
         showScreen(){
             this.screen = true;
+            this.winner = this.win;
         },
         reset(animation = false){
             this.cells = this.generateCell();

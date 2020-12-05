@@ -27,7 +27,7 @@
                 </cell>
             </div>
             <screen id="screen" v-if="screen">
-                <p><i class="fas" :class="{'fa-trophy': win, 'fa-bomb': !win}"></i> {{ win ? 'Victory' : 'Loose' }}</p>
+                <p><i class="fas" :class="{'fa-trophy': winner, 'fa-bomb': !winner}"></i> {{ winner ? 'Victory' : 'Loose' }}</p>
             </screen>
         </div>
     </body>
