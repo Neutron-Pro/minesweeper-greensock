@@ -41,6 +41,7 @@ body, #gamePanel, .cell, .content, #screen{
 #board{
     display: flex;
     flex-wrap: wrap;
+    overflow: hidden;
 }
 
 .cell{

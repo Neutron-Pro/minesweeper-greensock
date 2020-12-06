@@ -28,7 +28,7 @@ Vue.component('screen', {
        gsap.from(document.getElementById('screen'), {opacity: 0, duration: .5, ease: 'power2.in'});
        setTimeout(()=>{
            this.$parent.reset(true);
-           gsap.to(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 1, ease: 'power2.out', onComplete: () => {
+           gsap.to(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 10, ease: 'power2.out', onComplete: () => {
                this.$parent.screen = false;
                this.$parent.winner = false;
            }});
@@ -98,7 +98,30 @@ const vue = new Vue({
             document.documentElement.style.setProperty('--count-case-width', this.options.x);
 
             if(animation){
-                gsap.from('.cell', {opacity: 0, duration: .5, stagger: 0.01, ease: 'elastic'});
+                const elements = document.querySelectorAll('.cell');
+                for(let i = elements.length - 1; i > -1; i--){
+                    gsap.to(elements[i], {
+                        y:(window.innerHeight - elements[i].clientHeight) - elements[i].offsetTop,
+                        x:gsap.utils.random(-150, 150),
+                        duration: 2,
+                        delay: 0.05 * (elements.length-i),
+                        rotation: gsap.utils.random(-180, 180),
+                        ease: 'elastic',
+                        onComplete: () => {
+                            if(i === 0){
+                                gsap.to('.cell', {
+                                    y: 0,
+                                    x: 0,
+                                    duration: 2,
+                                    stagger: 0.02,
+                                    rotation: 0,
+                                    delay: 1,
+                                    ease: 'elastic'
+                                })
+                            }
+                        }
+                    })
+                }
             }
         },
         generateCell(){
