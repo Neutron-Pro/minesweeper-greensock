@@ -65,6 +65,38 @@ body, #gamePanel, .cell, .content, #screen{
     border-radius: 50%;
 }
 
+.index-1{
+    color: #5959d7;
+}
+
+.index-2{
+    color: #62ac46;
+}
+
+.index-3{
+    color: #b9bc50;
+}
+
+.index-4{
+    color: #d29a48;
+}
+
+.index-5{
+    color: #c85757;
+}
+
+.index-6{
+    color: #d24f2b;
+}
+
+.index-7{
+    color: #e31313;
+}
+
+.index-8{
+    color: #ff0000;
+}
+
 .content::selection{
     background-color: transparent;
 }

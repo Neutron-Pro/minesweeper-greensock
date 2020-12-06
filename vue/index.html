@@ -19,11 +19,11 @@
             <div id="board">
                 <cell v-for="cell in cells" class="cell" :class="{close: !cell.open, open: cell.open}" :id="cell.id" :key="cell.id" v-bind:cell="cell"
                       @click.left.prevent.native="setOpen(cell)" @click.right.prevent.native="setFlag(cell)">
-                    <p v-if="cell.flag || cell.open" class="content">
+                    <div v-if="cell.flag || cell.open" class="content">
                         <i v-if="cell.flag" class="fas fa-flag"></i>
                         <i v-else-if="cell.open && cell.bomb" class="fas fa-bomb"></i>
-                        {{ cell.open && !cell.bomb && cell.index > 0 ? cell.index : '' }}
-                    </p>
+                        <p v-if="cell.open && !cell.bomb && cell.index > 0" :class="`index-${cell.index}`">{{cell.index}}</p>
+                    </div>
                 </cell>
             </div>
             <screen id="screen" v-if="screen">

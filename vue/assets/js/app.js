@@ -70,6 +70,14 @@ const vue = new Vue({
                 this.animations.push(document.getElementById(cell.id));
                 if(cell.bomb){
                     this.showScreen();
+                    this.getAdjacentCell(cell, 2).forEach(target => {
+                       gsap.to(document.getElementById(target.cell.id), {
+                           duration: gsap.utils.random(0.5, 2.5),
+                           x: gsap.utils.random(-100, 100),
+                           y: gsap.utils.random(-100, 100),
+                           rotation: gsap.utils.random(-180, 180)
+                       })
+                    });
                     return;
                 }
                 if(cell.index === 0){
@@ -163,11 +171,11 @@ const vue = new Vue({
             }
             return cells;
         },
-        getAdjacentCell(cell){
-            return this.$children.filter(current => this.isAdjacent(Math.abs(current.cell.x - cell.x), Math.abs(current.cell.y - cell.y)));
+        getAdjacentCell(cell, radius = 1){
+            return this.$children.filter(current => this.isAdjacent(Math.abs(current.cell.x - cell.x), Math.abs(current.cell.y - cell.y), radius));
         },
-        isAdjacent(x, y){
-            return x !== y && x < 2 && y < 2;
+        isAdjacent(x, y, radius){
+            return x !== y && x <= radius && y <= radius;
         }
     },
     mounted(){
