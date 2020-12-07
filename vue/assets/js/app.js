@@ -71,10 +71,14 @@ const vue = new Vue({
                 if(cell.bomb){
                     this.showScreen();
                     this.getAdjacentCell(cell, 2).forEach(target => {
-                       gsap.to(document.getElementById(target.cell.id), {
+                       const el = document.getElementById(target.cell.id);
+                       el.style.zIndex = gsap.utils.random(5,10);
+                       gsap.to(el, {
                            duration: gsap.utils.random(0.5, 2.5),
-                           x: gsap.utils.random(-100, 100),
-                           y: gsap.utils.random(-100, 100),
+                           x: gsap.utils.random(-200, 200),
+                           y: gsap.utils.random(-200, 200),
+                           rotationX: gsap.utils.random(180, 1800, 180),
+                           rotationY: gsap.utils.random(180, 1800, 180),
                            rotation: gsap.utils.random(-180, 180)
                        })
                     });
@@ -100,11 +104,6 @@ const vue = new Vue({
             this.winner = this.win;
         },
         reset(animation = false){
-            this.cells = this.generateCell();
-            this.win = false;
-            this.rand = new Rand(this.options.seed);
-            document.documentElement.style.setProperty('--count-case-width', this.options.x);
-
             if(animation){
                 const elements = document.querySelectorAll('.cell');
                 for(let i = elements.length - 1; i > -1; i--){
@@ -117,9 +116,13 @@ const vue = new Vue({
                         ease: 'elastic',
                         onComplete: () => {
                             if(i === 0){
+                                this.resetGame();
                                 gsap.to('.cell', {
                                     y: 0,
                                     x: 0,
+                                    zIndex: 0,
+                                    rotationX: 0,
+                                    rotationY: 0,
                                     duration: 2,
                                     stagger: 0.02,
                                     rotation: 0,
@@ -130,7 +133,15 @@ const vue = new Vue({
                         }
                     })
                 }
+                return;
             }
+            this.resetGame();
+        },
+        resetGame(){
+            this.cells = this.generateCell();
+            this.win = false;
+            this.rand = new Rand(this.options.seed);
+            document.documentElement.style.setProperty('--count-case-width', this.options.x);
         },
         generateCell(){
             const cells = new Array(this.options.x);
@@ -175,7 +186,7 @@ const vue = new Vue({
             return this.$children.filter(current => this.isAdjacent(Math.abs(current.cell.x - cell.x), Math.abs(current.cell.y - cell.y), radius));
         },
         isAdjacent(x, y, radius){
-            return x !== y && x <= radius && y <= radius;
+            return !(x === y && Math.abs(x) === radius) && x <= radius && y <= radius;
         }
     },
     mounted(){
