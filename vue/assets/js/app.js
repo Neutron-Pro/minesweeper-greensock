@@ -28,10 +28,10 @@ Vue.component('screen', {
        gsap.from(document.getElementById('screen'), {opacity: 0, duration: .5, ease: 'power2.in'});
        setTimeout(()=>{
            this.$parent.reset(true);
-           gsap.to(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 10, ease: 'power2.out', onComplete: () => {
+           playTo(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 10, ease: 'power2.out'}, () => {
                this.$parent.screen = false;
                this.$parent.winner = false;
-           }});
+           });
        }, 3_000);
    }
 });
@@ -45,7 +45,7 @@ Vue.component('cell', {
    },
    mounted(){
        if(this.cell.x === this.$parent.options.x-1 && this.cell.y === this.$parent.options.y-1){
-           gsap.from('.cell', {opacity: 0, duration: .5, stagger: 0.01, ease: 'elastic'});
+           playFrom('.cell', {opacity: 0, duration: .5, stagger: 0.01, ease: 'elastic'});
        }
    }
 });
@@ -73,7 +73,7 @@ const vue = new Vue({
                     this.getAdjacentCell(cell, 2).forEach(target => {
                        const el = document.getElementById(target.cell.id);
                        el.style.zIndex = gsap.utils.random(5,10);
-                       gsap.to(el, {
+                       playTo(el, {
                            duration: gsap.utils.random(0.5, 2.5),
                            x: gsap.utils.random(-200, 200),
                            y: gsap.utils.random(-200, 200),
@@ -107,30 +107,8 @@ const vue = new Vue({
             if(animation){
                 const elements = document.querySelectorAll('.cell');
                 for(let i = elements.length - 1; i > -1; i--){
-                    gsap.to(elements[i], {
-                        y:(window.innerHeight - elements[i].clientHeight) - elements[i].offsetTop,
-                        x:gsap.utils.random(-150, 150),
-                        duration: 2,
-                        delay: 0.05 * (elements.length-i),
-                        rotation: gsap.utils.random(-180, 180),
-                        ease: 'elastic',
-                        onComplete: () => {
-                            if(i === 0){
-                                this.resetGame();
-                                gsap.to('.cell', {
-                                    y: 0,
-                                    x: 0,
-                                    zIndex: 0,
-                                    rotationX: 0,
-                                    rotationY: 0,
-                                    duration: 2,
-                                    stagger: 0.02,
-                                    rotation: 0,
-                                    delay: 1,
-                                    ease: 'elastic'
-                                })
-                            }
-                        }
+                    playReset(elements[i], elements.length-i, ()=>{
+                        if(i === 0){ playResetComplete(this) }
                     })
                 }
                 return;
@@ -194,8 +172,41 @@ const vue = new Vue({
     },
     updated(){
         if(this.animations.length > 0){
-            gsap.from(this.animations, {duration: 1, opacity: 0, stagger: 0.01, ease: 'elastic'});
+            playFrom(this.animations, {duration: 1, opacity: 0, stagger: 0.01, ease:'elastic'});
             this.animations = [];
         }
     }
 })
+
+/* ANIMATIONS GSAP */
+
+function playReset(element, index, complete = () => {}){
+    gsap.to(element, {
+        y:(window.innerHeight - element.clientHeight) - element.offsetTop,
+        x:gsap.utils.random(-150, 150),
+        duration: 2,
+        delay: 0.05 * index,
+        rotation: gsap.utils.random(-180, 180),
+        ease: 'elastic',
+        onComplete: complete
+    })
+}
+
+function playResetComplete(game){
+    game.resetGame();
+    gsap.to('.cell', {y: 0, x: 0, zIndex: 0, rotationX: 0, rotationY: 0, duration: 2, stagger: 0.02, rotation: 0, delay: 1, ease: 'elastic'})
+}
+
+/** @param {HTMLElement[]|HTMLElement|string} elements
+  * @param {$ObjMap} params
+  * @param {function=} complete */
+function playFrom(elements, params, complete = () => {}){
+    gsap.from(elements, {...params, onComplete: complete});
+}
+
+/** @param {HTMLElement[]|HTMLElement|string} elements
+ * @param {$ObjMap} params
+ * @param {function=} complete */
+function playTo(elements, params, complete = () => {}){
+    gsap.to(elements, {...params, onComplete: complete});
+}
