@@ -1,38 +1,12 @@
 const options = {x:9, y:9, bombs: 10, seed: 0}
 
-class Rand{
-    /** @param {int|undefined} seed */
-    constructor(seed){
-        if(seed === undefined || seed < 1){
-            seed = Math.floor(Math.random() * 1_000_000)+1
-        }
-        this.orignalSeed = seed;
-        this.seed = seed;
-    }
-    /** @param {int|undefined} bound */
-    next(bound){
-        this.seed = Math.sin(this.seed) * 10000;
-        let rand = this.seed - Math.floor(this.seed);
-        if(bound !== undefined || bound > 0){
-            rand = Math.floor(rand * bound);
-        }
-        return rand;
-    }
-}
-
 Vue.component('screen', {
    render: function (element) {
        return element('div', this.$slots.default)
    },
    mounted() {
-       gsap.from(document.getElementById('screen'), {opacity: 0, duration: .5, ease: 'power2.in'});
-       setTimeout(()=>{
-           this.$parent.reset(true);
-           playTo(document.getElementById('screen'), {opacity: 0, duration: .5, delay: 10, ease: 'power2.out'}, () => {
-               this.$parent.screen = false;
-               this.$parent.winner = false;
-           });
-       }, 3_000);
+       playShowScreen();
+       setTimeout(()=> this.$parent.reset(true), 3_000);
    }
 });
 
@@ -45,7 +19,7 @@ Vue.component('cell', {
    },
    mounted(){
        if(this.cell.x === this.$parent.options.x-1 && this.cell.y === this.$parent.options.y-1){
-           playFrom('.cell', {opacity: 0, duration: .5, stagger: 0.01, ease: 'elastic'});
+           playGameEnter();
        }
    }
 });
@@ -70,18 +44,7 @@ const vue = new Vue({
                 this.animations.push(document.getElementById(cell.id));
                 if(cell.bomb){
                     this.showScreen();
-                    this.getAdjacentCell(cell, 2).forEach(target => {
-                       const el = document.getElementById(target.cell.id);
-                       el.style.zIndex = gsap.utils.random(5,10);
-                       playTo(el, {
-                           duration: gsap.utils.random(0.5, 2.5),
-                           x: gsap.utils.random(-200, 200),
-                           y: gsap.utils.random(-200, 200),
-                           rotationX: gsap.utils.random(180, 1800, 180),
-                           rotationY: gsap.utils.random(180, 1800, 180),
-                           rotation: gsap.utils.random(-180, 180)
-                       })
-                    });
+                    this.getAdjacentCell(cell, 2).forEach(target => playExplode(document.getElementById(target.cell.id)));
                     return;
                 }
                 if(cell.index === 0){
@@ -122,16 +85,16 @@ const vue = new Vue({
             document.documentElement.style.setProperty('--count-case-width', this.options.x);
         },
         generateCell(){
-            const cells = new Array(this.options.x);
+            const cells = new Array(this.options.y);
             for(let i = 0; i < cells.length; i++){
-                cells[i] = new Array(this.options.y);
+                cells[i] = new Array(this.options.x);
             }
             return this.fillCells(cells);
         },
         fillCells(cells){
             for(let y = 0; y < this.options.y; y++){
                 for(let x = 0; x < this.options.x; x++){
-                    cells[x][y] = {x, y, index: 0, bomb: false, open: false, flag: false, id: `${x}-${y}`}
+                    cells[y][x] = {x, y, index: 0, bomb: false, open: true, flag: false, id: `${x}-${y}`}
                 }
             }
             return this.loadCell(cells)
@@ -144,16 +107,16 @@ const vue = new Vue({
             while (remainingBomb > 0){
                 const x = this.rand.next(this.options.x);
                 const y = this.rand.next(this.options.y);
-                if(cells[x][y].bomb){
+                if(cells[y][x].bomb){
                     continue;
                 }
-                cells[x][y].bomb = true;
+                cells[y][x].bomb = true;
                 for(let xx = x-1; xx < x+2; xx++){
                     for(let yy = y-1; yy < y+2; yy++){
                         if((xx < 0 || xx >= this.options.x) || (yy < 0 || yy >= this.options.y) || (xx === x && yy === y)){
                             continue;
                         }
-                        cells[xx][yy].index++;
+                        cells[yy][xx].index++;
                     }
                 }
                 remainingBomb--;
@@ -172,7 +135,7 @@ const vue = new Vue({
     },
     updated(){
         if(this.animations.length > 0){
-            playFrom(this.animations, {duration: 1, opacity: 0, stagger: 0.01, ease:'elastic'});
+            playOpeningCases(this.animations);
             this.animations = [];
         }
     }
@@ -180,12 +143,16 @@ const vue = new Vue({
 
 /* ANIMATIONS GSAP */
 
+function playGameEnter(){
+    playFrom('.cell', {opacity: 0, duration: .5, stagger: (0.81 / (options.x*options.y)), ease: 'elastic'});
+}
+
 function playReset(element, index, complete = () => {}){
     gsap.to(element, {
         y:(window.innerHeight - element.clientHeight) - element.offsetTop,
         x:gsap.utils.random(-150, 150),
         duration: 2,
-        delay: 0.05 * index,
+        delay: (4.05 / (options.x * options.y)) * index,
         rotation: gsap.utils.random(-180, 180),
         ease: 'elastic',
         onComplete: complete
@@ -194,7 +161,32 @@ function playReset(element, index, complete = () => {}){
 
 function playResetComplete(game){
     game.resetGame();
-    gsap.to('.cell', {y: 0, x: 0, zIndex: 0, rotationX: 0, rotationY: 0, duration: 2, stagger: 0.02, rotation: 0, delay: 1, ease: 'elastic'})
+    playTo('.cell', {y: 0, x: 0, zIndex: 0, rotationX: 0, rotationY: 0, duration: 2, stagger: (1.62 / (options.x*options.y)), rotation: 0, delay: 1, ease: 'elastic'}, () => {
+        playTo(document.getElementById('screen'), {opacity: 0, duration: .5, ease: 'power2.out'}, () => {
+            game.screen = false;
+            game.winner = false;
+        });
+    })
+}
+
+function playOpeningCases(cases){
+    playFrom(cases, {duration: 1, opacity: 0, stagger: 0.01, ease:'elastic'});
+}
+
+function playExplode(element){
+    element.style.zIndex = gsap.utils.random(5,10);
+    playTo(element, {
+        duration: gsap.utils.random(0.5, 2.5),
+        x: gsap.utils.random(-200, 200),
+        y: gsap.utils.random(-200, 200),
+        rotationX: gsap.utils.random(180, 1800, 180),
+        rotationY: gsap.utils.random(180, 1800, 180),
+        rotation: gsap.utils.random(-180, 180)
+    })
+}
+
+function playShowScreen(){
+    gsap.from(document.getElementById('screen'), {opacity: 0, duration: .5, ease: 'power2.in'});
 }
 
 /** @param {HTMLElement[]|HTMLElement|string} elements
