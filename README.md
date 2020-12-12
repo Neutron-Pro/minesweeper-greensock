@@ -1,13 +1,13 @@
-**Voir le site** : https://neutron-pro.github.io/minesweeper-greensock/
+**View site with Vue** : https://neutron-pro.github.io/minesweeper-greensock/vue/
 
-**Voir le site avec React** : https://neutron-pro.github.io/minesweeper-greensock/react/
+**View site with React** : https://neutron-pro.github.io/minesweeper-greensock/react/
 
-**Voir le site avec Vue** : https://neutron-pro.github.io/minesweeper-greensock/vue/
+**View site** : https://neutron-pro.github.io/minesweeper-greensock/
 
 Controls
 ---
 
 ```yaml
 Left-Click: Open Case
-Right-Click: Place Flag
+Right-Click: Place Flag => No compatible with mobile.
 ```
