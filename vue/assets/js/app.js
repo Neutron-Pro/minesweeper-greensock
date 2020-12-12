@@ -94,7 +94,7 @@ const vue = new Vue({
         fillCells(cells){
             for(let y = 0; y < this.options.y; y++){
                 for(let x = 0; x < this.options.x; x++){
-                    cells[y][x] = {x, y, index: 0, bomb: false, open: true, flag: false, id: `${x}-${y}`}
+                    cells[y][x] = {x, y, index: 0, bomb: false, open: false, flag: false, id: `${x}-${y}`}
                 }
             }
             return this.loadCell(cells)
