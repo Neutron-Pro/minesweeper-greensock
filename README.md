@@ -8,6 +8,11 @@ Controls
 ---
 
 ```yaml
-Left-Click: Open Case
-Right-Click: Place Flag => No compatible with mobile.
+PC:
+  Left-Click: Open Case
+  Right-Click: Place Flag
+
+Mobile:
+  Quick-Clic: Open Case
+  Long-Clik: Place Flag
 ```

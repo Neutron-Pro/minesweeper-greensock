@@ -13,29 +13,146 @@
 }
 
 body{
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+body, button, input{
     font: 400 16px/1.3 'Stalinist One', cursive;
     color: white;
-    min-height: 100vh;
+}
+
+button, input{
+    outline: none;
 }
 
 body, .open .content{
     background-color: #272727;
 }
 
-/* Game Panel */
-#gamePanel, .cell{
-    position: relative;
-}
-
-#gamePanel, #board{
+#gamePanel, #board, #menu{
     width: var(--width-size);
 }
 
-body, #gamePanel, .cell, .content, #screen{
+body, #gamePanel, .cell, .content, #screen, #menu{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/* Game Menu */
+#menu{
+    height: var(--width-size);
+    background-color: #626262;
+    justify-content: space-evenly;
+    text-transform: uppercase;
+}
+
+#menu .title{
+    width: calc(var(--width-size) * 0.90);
+    font-size: calc(calc(var(--width-size) * 0.75) / 50);
+    padding: 6.5em;
+    background-color: #484848;
+
+    border-top: 1em solid white;
+    border-left: 1em solid white;
+    border-bottom: 1em solid black;
+    border-right: 1em solid black;
+
+    text-shadow: .3em .6em .1em #000;
+}
+
+#menu h1{
+    font-size: calc(calc(var(--width-size) * 0.75) / 15);
+}
+
+#menu .round{
+    background-color: #b3b3b3;
+
+    position: absolute;
+    width: fit-content;
+    border-radius: 50%;
+    padding: .5em;
+
+    border-top: .3em solid white;
+    border-left: .3em solid white;
+    border-bottom: .3em solid black;
+    border-right: .3em solid black;
+}
+
+#menu .title span.green{
+    color: #42b983;
+}
+
+#menu .round.rt{ top: .7em; }
+
+#menu .round.rb{ bottom: .7em; }
+
+#menu .round.rl{ left: .7em; }
+
+#menu .round.rr{ right: .7em; }
+
+#menu .links{
+    position: absolute;
+    right: 6em;
+    bottom: 2em;
+}
+
+#menu .links img{
+    width: 2em;
+}
+
+#menu .options, #menu .options .option-list .option-group input, #menu .options button{
+    font-size: calc(calc(var(--width-size) * 0.75) / 40);
+}
+
+#menu .options{
+    width: calc(var(--width-size) * 0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#menu .options h3{
+    font-size: calc(calc(var(--width-size) * 0.75) / 30);
+    text-align: center;
+}
+
+#menu .options .option-list{
+    padding: 1em;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#menu .options .option-list .option-group{
+    padding: .5em;
+}
+
+#menu .options .option-list label, #menu .options .option-list  input{
+    display: block;
+}
+
+#menu .options .option-list .option-group input{
+    width: 100%;
+}
+
+#menu .options button{
+    cursor: pointer;
+    width: 70%;
+    padding: .5em;
+    transition: .3s;
+    background-color: #4e4e4e;
+    border: none;
+}
+
+#menu .options button:hover{
+    background-color: #3e3e3e;
+}
+
+/* Game Panel */
+#gamePanel, .cell, #menu .title{
+    position: relative;
 }
 
 /* Game */

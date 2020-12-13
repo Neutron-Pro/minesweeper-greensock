@@ -52,9 +52,9 @@ Vue.component('game', {
     },
     template: `<div>
         <div id="board">
-            <cell v-for="cell in cells" :key="cell.id" v-bind:cell="cell"></cell>
+            <cell v-for="cell in cells" :key="cell.id" v-bind:cell="cell" />
         </div>
-        <screen v-if="screen" v-bind:winner="winner"></screen>
+        <screen v-if="screen" v-bind:winner="winner" />
     </div>`,
     data: () => {
         return {
@@ -84,6 +84,7 @@ Vue.component('game', {
                 this.frees--;
                 this.win = this.frees <= 0;
                 if(this.win){
+                    playOpeningCases('.cell');
                     this.showScreen();
                 }
             }
@@ -166,10 +167,60 @@ Vue.component('game', {
     }
 })
 
+Vue.component('game-menu', {
+    props:{
+        options: Object
+    },
+    template: `<div id="menu">
+        <div class="title">
+            <h1>Minesweeper</h1>
+            <h2>With <span class="green">Vue.JS</span> & Green<span class="green">Sock</span></h2>
+            <div class="round rt rl"></div>
+            <div class="round rt rr"></div>
+            <div class="round rb rl"></div>
+            <div class="round rb rr"></div>
+            <div class="links">
+                <a href="https://vuejs.org/"><img src="https://vuejs.org/images/logo.png" alt="Vue.JS Logo"></a>
+                <a href="https://greensock.com/"><img src="https://greensock.com/uploads/monthly_2018_06/favicon.ico.4811a987b377f271db584b422f58e5a7.ico" alt="GreenSock Logo"></a>
+            </div>
+        </div>
+        <div class="options">
+            <h3>Number of cells</h3>
+            <div class="option-list">
+                <div class="option-group">
+                    <label for="case-x">on X: {{ options.x }}</label>
+                    <input type="range" name="case-x" id="case-x" min="9" max="30" v-model:value="options.x">
+                </div>
+                <div class="option-group">
+                    <label for="case-y">on Y: {{ options.y }}</label>
+                    <input type="range" name="case-y" id="case-y" min="9" max="30" v-model:value="options.y">
+                </div>
+            </div>
+            <h3>Number of bombs</h3>
+            <div class="option-list">
+                <div class="option-group">
+                    <label for="case-x"> {{ options.bombs }}%</label>
+                    <input type="range" name="case-x" id="bombs" min="10" max="50" v-model:value="options.bombs">
+                </div>
+            </div>
+            <button @click="onPlay()">Play</button>
+        </div>
+    </div>`,
+    methods: {
+        onPlay(){
+            this.options.x = parseInt(this.options.x);
+            this.options.y = parseInt(this.options.y);
+            this.options.bombs = parseInt(this.options.bombs);
+            this.$parent.game = true
+        }
+    }
+})
+
 const vue = new Vue({
     el: '#gamePanel',
     data: {
-        options
+        options,
+        game: false
     }
 })
 
