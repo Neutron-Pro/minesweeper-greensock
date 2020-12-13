@@ -180,8 +180,8 @@ Vue.component('game-menu', {
             <div class="round rb rl"></div>
             <div class="round rb rr"></div>
             <div class="links">
-                <a href="https://vuejs.org/"><img src="https://vuejs.org/images/logo.png" alt="Vue.JS Logo"></a>
-                <a href="https://greensock.com/"><img src="https://greensock.com/uploads/monthly_2018_06/favicon.ico.4811a987b377f271db584b422f58e5a7.ico" alt="GreenSock Logo"></a>
+                <a href="https://vuejs.org/" target="_blank"><img src="https://vuejs.org/images/logo.png" alt="Vue.JS Logo"></a>
+                <a href="https://greensock.com/" target="_blank"><img src="https://greensock.com/uploads/monthly_2018_06/favicon.ico.4811a987b377f271db584b422f58e5a7.ico" alt="GreenSock Logo"></a>
             </div>
         </div>
         <div class="options">
