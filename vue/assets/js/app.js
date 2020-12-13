@@ -173,8 +173,8 @@ Vue.component('game-menu', {
     },
     template: `<div id="menu">
         <div class="title">
-            <h1>Minesweeper</h1>
-            <h2>With <span class="green">Vue.JS</span> & Green<span class="green">Sock</span></h2>
+            <h1 class="white">Minesweeper</h1>
+            <h2>With <span class="green">Vue.JS</span> & <span class="white">Green</span><span class="green">Sock</span></h2>
             <div class="round rt rl"></div>
             <div class="round rt rr"></div>
             <div class="round rb rl"></div>
@@ -185,7 +185,7 @@ Vue.component('game-menu', {
             </div>
         </div>
         <div class="options">
-            <h3>Number of cells</h3>
+            <h3 class="white">Number of cells</h3>
             <div class="option-list">
                 <div class="option-group">
                     <label for="case-x">on X: {{ options.x }}</label>
@@ -196,7 +196,7 @@ Vue.component('game-menu', {
                     <input type="range" name="case-y" id="case-y" min="9" max="30" v-model:value="options.y">
                 </div>
             </div>
-            <h3>Number of bombs</h3>
+            <h3 class="white">Number of bombs</h3>
             <div class="option-list">
                 <div class="option-group">
                     <label for="case-x"> {{ options.bombs }}%</label>
@@ -206,13 +206,34 @@ Vue.component('game-menu', {
             <button @click="onPlay()">Play</button>
         </div>
     </div>`,
+    data: function (){
+        return {
+            timeline: null
+        }
+    },
     methods: {
         onPlay(){
             this.options.x = parseInt(this.options.x);
             this.options.y = parseInt(this.options.y);
             this.options.bombs = parseInt(this.options.bombs);
             this.$parent.game = true
+        },
+        playTimeline(){
+            this.timeline.to('#menu', {
+                duration: 15,
+                backgroundPositionX: `${gsap.utils.random(0, 100)}%`,
+                backgroundPositionY: `${gsap.utils.random(0, 100)}%`,
+                onComplete: this.playTimeline
+            })
         }
+    },
+    mounted(){
+        this.timeline = gsap.timeline();
+        this.playTimeline();
+        this.timeline.play();
+    },
+    destroyed(){
+        this.timeline.kill();
     }
 })
 
@@ -257,7 +278,7 @@ function playOpeningCases(cases){
 }
 
 function playExplode(element){
-    element.style.zIndex = gsap.utils.random(5,10);
+    element.style.zIndex = `${Math.round(gsap.utils.random(2, 10))}`;
     playTo(element, {
         duration: gsap.utils.random(0.5, 2.5),
         x: gsap.utils.random(-200, 200),
