@@ -12,24 +12,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
     
         <script src="../assets/js/randomizer.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@superyusuke/vue-fragment@1.0.0/dist/vue-fragments.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js" defer></script>
         <script src="assets/js/app.js" defer></script>
     </head>
     <body>
         <div id="gamePanel">
-            <div id="board">
-                <cell v-for="cell in cells" class="cell" :class="{close: !cell.open, open: cell.open}" :id="cell.id" :key="cell.id" v-bind:cell="cell"
-                      @click.left.prevent.native="setOpen(cell)" @click.right.prevent.native="setFlag(cell)">
-                    <div v-if="cell.flag || cell.open" class="content">
-                        <i v-if="cell.flag" class="fas fa-flag"></i>
-                        <i v-else-if="cell.open && cell.bomb" class="fas fa-bomb"></i>
-                        <p v-if="cell.open && !cell.bomb && cell.index > 0" :class="`index-${cell.index}`">{{cell.index}}</p>
-                    </div>
-                </cell>
-            </div>
-            <screen id="screen" v-if="screen">
-                <p><i class="fas" :class="{'fa-trophy': winner, 'fa-bomb': !winner}"></i> {{ winner ? 'Victory' : 'Loose' }}</p>
-            </screen>
+            <game v-bind:options="options"></game>
         </div>
     </body>
 </html>

@@ -1,9 +1,12 @@
 const options = {x:9, y:9, bombs: 10, seed: 0}
 
 Vue.component('screen', {
-   render: function (element) {
-       return element('div', this.$slots.default)
+   props:{
+       winner: Boolean
    },
+   template: `<div id="screen">
+        <p><i class="fas" :class="{'fa-trophy': winner, 'fa-bomb': !winner}"></i> {{ winner ? 'Victory' : 'Loose' }}</p>
+   </div>`,
    mounted() {
        playShowScreen();
        setTimeout(()=> this.$parent.reset(true), 3_000);
@@ -12,30 +15,58 @@ Vue.component('screen', {
 
 Vue.component('cell', {
    props:{
-       cell: Object,
+       cell: Object
    },
-   render: function (element){
-       return element('div', this.$slots.default)
+   template: `<div class="cell" :class="{close: !cell.open, open: cell.open}" :id="cell.id"
+            @click.left.prevent="setOpen()" @click.right.prevent="setFlag()">
+        <div v-if="cell.flag || cell.open" class="content">
+            <i v-if="cell.flag" class="fas fa-flag"></i>
+            <i v-else-if="cell.open && cell.bomb" class="fas fa-bomb"></i>
+            <p v-if="cell.open && !cell.bomb && cell.index > 0" :class="'index-'+cell.index">{{cell.index}}</p>
+        </div> 
+   </div>`,
+   methods: {
+       setOpen(){
+           this.$parent.setOpen(this.cell);
+       },
+       setFlag() {
+           this.$parent.setFlag(this.cell);
+       }
    },
    mounted(){
        if(this.cell.x === this.$parent.options.x-1 && this.cell.y === this.$parent.options.y-1){
            playGameEnter();
        }
+   },
+   updated() {
+       if(this.$parent.animations.length > 0){
+           playOpeningCases(this.$parent.animations);
+           this.$parent.animations = [];
+       }
    }
 });
 
-const vue = new Vue({
-    el: '#gamePanel',
-    data: {
-        options,
-        cells: [],
-        bombs: 0,
-        frees: 0,
-        win: false,
-        winner: false,
-        screen: false,
-        rand: new Rand(options.seed),
-        animations: []
+Vue.component('game', {
+    props: {
+        options: Object
+    },
+    template: `<div>
+        <div id="board">
+            <cell v-for="cell in cells" :key="cell.id" v-bind:cell="cell"></cell>
+        </div>
+        <screen v-if="screen" v-bind:winner="winner"></screen>
+    </div>`,
+    data: () => {
+        return {
+            cells: [],
+            bombs: 0,
+            frees: 0,
+            win: false,
+            winner: false,
+            screen: false,
+            rand: new Rand(options.seed),
+            animations: []
+        }
     },
     methods: {
         setOpen(cell){
@@ -131,13 +162,14 @@ const vue = new Vue({
         }
     },
     mounted(){
-        this.reset()
-    },
-    updated(){
-        if(this.animations.length > 0){
-            playOpeningCases(this.animations);
-            this.animations = [];
-        }
+        this.reset();
+    }
+})
+
+const vue = new Vue({
+    el: '#gamePanel',
+    data: {
+        options
     }
 })
 
