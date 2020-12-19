@@ -210,7 +210,7 @@ Vue.component('game-menu', {
                 </div>
                 <div class="option-group">
                     <label for="case-y">on Y: {{ options.y }}</label>
-                    <input type="range" name="case-y" id="case-y" min="9" max="30" v-model:value="options.y">
+                    <input type="range" name="case-y" id="case-y" min="8" :max="options.x" v-model:value="options.y">
                 </div>
             </div>
             <h3 class="white">Number of bombs</h3>
@@ -242,6 +242,9 @@ Vue.component('game-menu', {
                 backgroundPositionY: `${gsap.utils.random(0, 100)}%`,
                 onComplete: this.playTimeline
             })
+        },
+        isDisabledAxeY(){
+            return (parseInt(this.options.y) >= parseInt(this.options.x));
         }
     },
     updated() {
