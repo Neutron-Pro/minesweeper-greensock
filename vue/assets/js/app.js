@@ -1,23 +1,40 @@
 const options = {x:9, y:9, bombs: 10, seed: 0}
 
 Vue.component('screen', {
-   props:{
-       winner: Boolean
-   },
-   template: `<div id="screen">
+    props:{
+        winner: Boolean
+    },
+    template: `<div id="screen">
         <p><i class="fas" :class="{'fa-trophy': winner, 'fa-bomb': !winner}"></i> {{ winner ? 'Victory' : 'Loose' }}</p>
+        <div class="screen_buttons">
+            <button @click.left.prevent="playAgain()" v-if="!reload" class="screen_button">Play again</button>
+            <button @click.left.prevent="backToMenu()" v-if="!reload" class="screen_button">Back to menu</button>
+        </div>
    </div>`,
-   mounted() {
-       playShowScreen();
-       setTimeout(()=> this.$parent.reset(true), 3_000);
-   }
+    data(){
+        return {
+            reload: false
+        }
+    },
+    methods:{
+        playAgain() {
+            this.reload = true;
+            this.$parent.reset(true);
+        },
+        backToMenu() {
+            this.$root.game = false;
+        }
+    },
+    mounted() {
+        playShowScreen();
+    }
 });
 
 Vue.component('cell', {
-   props:{
-       cell: Object
-   },
-   template: `<div class="cell" :class="{close: !cell.open, open: cell.open}" :id="cell.id"
+    props:{
+        cell: Object
+    },
+    template: `<div class="cell" :class="{close: !cell.open, open: cell.open}" :id="cell.id"
             @click.left.prevent="setOpen()" @click.right.prevent="setFlag()">
         <div v-if="cell.flag || cell.open" class="content">
             <i v-if="cell.flag" class="fas fa-flag"></i>
@@ -25,25 +42,25 @@ Vue.component('cell', {
             <p v-if="cell.open && !cell.bomb && cell.index > 0" :class="'index-'+cell.index">{{cell.index}}</p>
         </div> 
    </div>`,
-   methods: {
-       setOpen(){
-           this.$parent.setOpen(this.cell);
-       },
-       setFlag() {
-           this.$parent.setFlag(this.cell);
-       }
-   },
-   mounted(){
-       if(this.cell.x === this.$parent.options.x-1 && this.cell.y === this.$parent.options.y-1){
-           playGameEnter();
-       }
-   },
-   updated() {
-       if(this.$parent.animations.length > 0){
-           playOpeningCases(this.$parent.animations);
-           this.$parent.animations = [];
-       }
-   }
+    methods: {
+        setOpen(){
+            this.$parent.setOpen(this.cell);
+        },
+        setFlag() {
+            this.$parent.setFlag(this.cell);
+        }
+    },
+    mounted(){
+        if(this.cell.x === this.$parent.options.x-1 && this.cell.y === this.$parent.options.y-1){
+            playGameEnter();
+        }
+    },
+    updated() {
+        if(this.$parent.animations.length > 0){
+            playOpeningCases(this.$parent.animations);
+            this.$parent.animations = [];
+        }
+    }
 });
 
 Vue.component('game', {
@@ -227,6 +244,11 @@ Vue.component('game-menu', {
             })
         }
     },
+    updated() {
+        if(parseInt(this.options.y) > parseInt(this.options.x)){
+            this.options.y = parseInt(this.options.x);
+        }
+    },
     mounted(){
         this.timeline = gsap.timeline();
         this.playTimeline();
@@ -252,8 +274,9 @@ function playGameEnter(){
 }
 
 function playReset(element, index, complete = () => {}){
+    const parent = document.getElementById('board');
     gsap.to(element, {
-        y:(window.innerHeight - element.clientHeight) - element.offsetTop,
+        y:((parent.offsetTop + parent.clientHeight) - element.clientHeight) - element.offsetTop,
         x:gsap.utils.random(-150, 150),
         duration: 2,
         delay: (4.05 / (options.x * options.y)) * index,
@@ -294,8 +317,8 @@ function playShowScreen(){
 }
 
 /** @param {HTMLElement[]|HTMLElement|string} elements
-  * @param {$ObjMap} params
-  * @param {function=} complete */
+ * @param {$ObjMap} params
+ * @param {function=} complete */
 function playFrom(elements, params, complete = () => {}){
     gsap.from(elements, {...params, onComplete: complete});
 }

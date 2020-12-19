@@ -29,6 +29,20 @@ button, input{
     outline: none;
 }
 
+button{
+    cursor: pointer;
+    border: none;
+
+    transition: .7s;
+    background-color: white;
+    color: #0075ff;
+}
+
+button:hover{
+    background-color: #0075ff;
+    color: #fff;
+}
+
 body, .open .content{
     background-color: #272727;
 }
@@ -55,10 +69,6 @@ body, #gamePanel, .cell, .content, #screen, #menu{
     background-position: 0 0;
     background-repeat: no-repeat;
     background-size: 200%;
-}
-
-#menu, #menu button{
-    color: #0075ff;
 }
 
 #menu .title{
@@ -154,17 +164,8 @@ body, #gamePanel, .cell, .content, #screen, #menu{
 }
 
 #menu .options button{
-    cursor: pointer;
     width: 70%;
     padding: .5em;
-    transition: .3s;
-    background-color: white;
-    border: none;
-}
-
-#menu .options button:hover{
-    background-color: #0075ff;
-    color: #fff;
 }
 
 /* Game Panel */
@@ -180,13 +181,11 @@ body, #gamePanel, .cell, .content, #screen, #menu{
 }
 
 .cell{
+    cursor: pointer;
     width: calc(var(--width-size) / var(--count-case-width));
     height: calc(var(--width-size) / var(--count-case-width));
     border: 1px solid #272727;
     font-family: 'Permanent Marker', cursive;
-}
-
-.cell{
     background-color: #737373;
 }
 
@@ -243,8 +242,25 @@ body, #gamePanel, .cell, .content, #screen, #menu{
     left: 0;
     width: 100%;
     height: 100%;
-    color: black;
     z-index: 20;
+}
+
+#screen p{
+    color: black;
+}
+
+#screen .screen_buttons{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    bottom: 1em;
+}
+
+#screen .screen_button{
+    padding: .5em 1.5em;
+    margin-top: .5em;
+    font-size: .5em;
 }
 
 .content, #screen{
