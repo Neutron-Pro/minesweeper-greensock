@@ -260,11 +260,15 @@ Vue.component('game-menu', {
 })
 
 const vue = new Vue({
-    el: '#gamePanel',
+    el: '#app',
     data: {
         options,
         game: false
-    }
+    },
+    template: `<div id="gamePanel">
+        <game-menu v-bind:options="options" v-if="!game"></game-menu>
+        <game v-bind:options="options" v-else></game>
+    </div>`
 })
 
 /* ANIMATIONS GSAP */
